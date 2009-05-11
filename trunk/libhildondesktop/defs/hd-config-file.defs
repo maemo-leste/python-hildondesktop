@@ -1,0 +1,58 @@
+;; -*- scheme -*-
+; object definitions ...
+(define-object File
+  (in-module "HDConfig")
+  (parent "GObject")
+  (c-name "HDConfigFile")
+  (gtype-id "H_TYPE_D_CONFIG_FILE")
+)
+;  (parent "GInitiallyUnowned")
+
+;; Enumerations and flags ...
+
+
+;; From hd-config-file.h
+
+(define-function hd_config_file_get_type
+  (c-name "hd_config_file_get_type")
+  (return-type "GType")
+)
+
+(define-function hd_config_file_new
+  (c-name "hd_config_file_new")
+  (is-constructor-of "HdConfigFile")
+  (return-type "HDConfigFile*")
+  (parameters
+    '("const-gchar*" "system_conf_dir")
+    '("const-gchar*" "user_conf_dir")
+    '("const-gchar*" "filename")
+  )
+)
+
+(define-function hd_config_file_new_with_defaults
+  (c-name "hd_config_file_new_with_defaults")
+  (return-type "HDConfigFile*")
+  (parameters
+    '("const-gchar*" "filename")
+  )
+)
+
+(define-method load_file
+  (of-object "HDConfigFile")
+  (c-name "hd_config_file_load_file")
+  (return-type "GKeyFile*")
+  (parameters
+    '("gboolean" "force_system_config")
+  )
+)
+
+(define-method save_file
+  (of-object "HDConfigFile")
+  (c-name "hd_config_file_save_file")
+  (return-type "gboolean")
+  (parameters
+    '("GKeyFile*" "key_file")
+  )
+)
+
+

@@ -1,0 +1,58 @@
+python-hildondesktop (0.0.2-1maemo1) unstable; urgency=low
+
+  * New version from Ubuntu
+  * Drop python2.6 requirement
+  * Change 'dist-packages' to 'site-packages' in install file
+  * Change hildon-desktop-dev to libhildondesktop1-dev in Build-Depends
+
+ -- Bruno dos Santos de Araujo <bruno.araujo@indt.org.br>  Wed,  6 May 2009 10:08:27 -0400
+
+python-hildondesktop (0.0.2-0ubuntu5) jaunty; urgency=low
+
+  * No-change rebuild to fix lpia shared library dependencies.
+
+ -- Matthias Klose <doko@ubuntu.com>  Sun, 22 Mar 2009 16:50:12 +0100
+
+python-hildondesktop (0.0.2-0ubuntu4) jaunty; urgency=low
+
+  * Update the patch to drop a number of other functions.
+
+ -- Steve Kowalik <stevenk@ubuntu.com>  Thu, 12 Mar 2009 14:03:43 +1100
+
+python-hildondesktop (0.0.2-0ubuntu3) jaunty; urgency=low
+
+  * Doh! Python 2.6 uses dist-packages, not site-packages.
+
+ -- Steve Kowalik <stevenk@ubuntu.com>  Mon, 02 Mar 2009 15:52:35 +1100
+
+python-hildondesktop (0.0.2-0ubuntu2) jaunty; urgency=low
+
+  * Update to Python 2.6.
+  * Clean up rules a little.
+  * Sprinkle in dpatch.
+  * Add a patch to build against hildon-desktop by removing set_batch_add.
+
+ -- Steve Kowalik <stevenk@ubuntu.com>  Mon, 02 Mar 2009 12:24:39 +1100
+
+python-hildondesktop (0.0.2-0ubuntu1) intrepid; urgency=low
+
+  [ Steve Kowalik ]
+  * Update to 0.0.2, target to Intrepid. (LP: #272085)
+  * Clean up dependencies, and use python-support.
+
+  [ Adilson Oliveira ]
+  * Fixed python-gtk2-dev dependency.
+  * Changed aclocal-1.7 to aclocal in autogen.sh 
+
+  [ Tollef Fog Heen ]
+  * Get rid of useless debian/debian file.
+  * Remove shared library gunk from debian/rules.
+  * Fix configure target; get rid of configure-stamp-target
+  * Add COPYING.LIB and write up debian/changelog.
+  * Add missing libtool, automake, autoconf build dependencies.
+  * Add versioned build-dependency on working libhildondesktop-dev for
+    working .pc file.
+  * Set maintainer to Ubuntu Mobile list.
+
+ -- Steve Kowalik <stevenk@ubuntu.com>  Mon, 22 Sep 2008 15:01:27 +1000
+

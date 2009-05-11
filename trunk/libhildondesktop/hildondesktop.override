@@ -1,0 +1,51 @@
+%%
+headers
+
+//all of these below are from the old hildon API...
+#if 0
+#include <Python.h>               
+#include <pygobject.h>
+#include <libhildondesktop/hildon-desktop-window.h>
+#include <libhildondesktop/hildon-desktop-panel.h>
+#include <libhildondesktop/hildon-desktop-panel-window.h>
+#include <libhildondesktop/hildon-desktop-panel-expandable.h>
+#include <libhildondesktop/hildon-desktop-panel-window-dialog.h>
+#include <libhildondesktop/hildon-desktop-panel-item.h>
+#include <libhildondesktop/hildon-desktop-multiscreen.h>
+#include <libhildondesktop/hildon-home-window.h>
+#include <libhildondesktop/hildon-home-titlebar.h>
+#include <libhildondesktop/hildon-home-area.h>
+#include <libhildondesktop/hildon-desktop-home-item.h>
+#include <libhildondesktop/hildon-desktop-plugin.h>
+#include <libhildondesktop/hildon-desktop-item.h>
+#include <libhildondesktop/statusbar-item.h>
+#include <libhildondesktop/tasknavigator-item.h>
+#endif
+// ...ending here
+
+#define NO_IMPORT_PYGOBJECT
+#include <pygobject.h>
+#include <glib-object.h>
+#include <libhildondesktop/libhildondesktop.h>
+
+#include "hildondesktop-includes.h"
+#include "hildondesktop-types.h"
+
+%%
+modulename hildondesktop 
+%%
+import gtk.Bin as PyGtkBin_Type
+import gtk.Box as PyGtkBox_Type 
+import gtk.Menu as PyGtkMenu_Type 
+import gtk.Window as PyGtkWindow_Type 
+import gtk.Container as PyGtkContainer_Type
+import gtk.EventBox as PyGtkEventBox_Type
+import gtk.Widget as PyGtkWidget_Type
+import gtk.gdk.Screen as PyGdkScreen_Type
+import gtk.gdk.Pixbuf as PyGdkPixbuf_Type
+import gobject.GObject as PyGObject_Type
+//import gobject.GTypeModule as PyGTypeModule_Type
+%%
+ignore-glob
+  *_get_type 
+%%

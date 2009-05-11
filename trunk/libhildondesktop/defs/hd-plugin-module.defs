@@ -1,0 +1,47 @@
+;; -*- scheme -*-
+; object definitions ...
+(define-object Module
+  (in-module "HDPlugin")
+  (parent "GTypeModule")
+  (c-name "HDPluginModule")
+  (gtype-id "HD_TYPE_PLUGIN_MODULE")
+)
+
+;; Enumerations and flags ...
+
+
+;; From hd-plugin-module.h
+
+(define-function hd_plugin_module_get_type
+  (c-name "hd_plugin_module_get_type")
+  (return-type "GType")
+)
+
+(define-function hd_plugin_module_new
+  (c-name "hd_plugin_module_new")
+  (is-constructor-of "HdPluginModule")
+  (return-type "HDPluginModule*")
+  (parameters
+    '("const-gchar*" "path")
+  )
+)
+
+(define-method new_object
+  (of-object "HDPluginModule")
+  (c-name "hd_plugin_module_new_object")
+  (return-type "GObject*")
+  (parameters
+    '("const-gchar*" "plugin_id")
+  )
+)
+
+(define-method add_type
+  (of-object "HDPluginModule")
+  (c-name "hd_plugin_module_add_type")
+  (return-type "none")
+  (parameters
+    '("GType" "type")
+  )
+)
+
+

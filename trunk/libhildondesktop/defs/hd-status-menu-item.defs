@@ -1,0 +1,20 @@
+;; -*- scheme -*-
+; object definitions ...
+(define-object MenuItem
+  (in-module "HDStatus")
+  (parent "HDStatusPluginItem")
+  (c-name "HDStatusMenuItem")
+  (gtype-id "H_TYPE_D_STATUS_MENU_ITEM")
+)
+
+;; Enumerations and flags ...
+
+
+;; From hd-status-menu-item.h
+
+(define-function hd_status_menu_item_get_type
+  (c-name "hd_status_menu_item_get_type")
+  (return-type "GType")
+)
+
+

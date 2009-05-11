@@ -1,0 +1,29 @@
+;; -*- scheme -*-
+; object definitions ...
+;; Enumerations and flags ...
+
+
+;; From hd-stamp-file.h
+
+(define-function hd_stamp_file_init
+  (c-name "hd_stamp_file_init")
+  (return-type "none")
+  (parameters
+    '("const-gchar*" "stamp_file")
+  )
+)
+
+(define-function hd_stamp_file_get_safe_mode
+  (c-name "hd_stamp_file_get_safe_mode")
+  (return-type "gboolean")
+)
+
+(define-function hd_stamp_file_finalize
+  (c-name "hd_stamp_file_finalize")
+  (return-type "none")
+  (parameters
+    '("const-gchar*" "stamp_file")
+  )
+)
+
+

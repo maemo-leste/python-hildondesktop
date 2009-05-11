@@ -1,0 +1,28 @@
+;; -*- scheme -*-
+; object definitions ...
+(define-object Plugin
+  (in-module "HDNotification")
+  (c-name "HDNotificationPlugin")
+  (gtype-id "H_TYPE_D_NOTIFICATION_PLUGIN")
+)
+
+;; Enumerations and flags ...
+
+
+;; From hd-notification-plugin.h
+
+(define-function hd_notification_plugin_get_type
+  (c-name "hd_notification_plugin_get_type")
+  (return-type "GType")
+)
+
+(define-method notify
+  (of-object "HDNotificationPlugin")
+  (c-name "hd_notification_plugin_notify")
+  (return-type "none")
+  (parameters
+    '("HDNotification*" "notification")
+  )
+)
+
+

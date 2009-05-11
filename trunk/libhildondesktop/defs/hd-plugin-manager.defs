@@ -1,0 +1,52 @@
+;; -*- scheme -*-
+; object definitions ...
+(define-object Manager
+  (in-module "HDPlugin")
+  (parent "HDPluginConfiguration")
+  (c-name "HDPluginManager")
+  (gtype-id "H_TYPE_D_PLUGIN_MANAGER")
+)
+
+;; Enumerations and flags ...
+
+
+;; From hd-plugin-manager.h
+
+(define-function hd_plugin_manager_get_type
+  (c-name "hd_plugin_manager_get_type")
+  (return-type "GType")
+)
+
+(define-function hd_plugin_manager_new
+  (c-name "hd_plugin_manager_new")
+  (is-constructor-of "HdPluginManager")
+  (return-type "HDPluginManager*")
+  (parameters
+    '("HDConfigFile*" "config_file")
+  )
+)
+
+(define-method run
+  (of-object "HDPluginManager")
+  (c-name "hd_plugin_manager_run")
+  (return-type "none")
+)
+
+(define-method get_plugin_config_key_file
+  (of-object "HDPluginManager")
+  (c-name "hd_plugin_manager_get_plugin_config_key_file")
+  (return-type "GKeyFile*")
+)
+
+(define-method set_load_priority_func
+  (of-object "HDPluginManager")
+  (c-name "hd_plugin_manager_set_load_priority_func")
+  (return-type "none")
+  (parameters
+    '("HDLoadPriorityFunc" "load_priority_func")
+    '("gpointer" "data")
+    '("GDestroyNotify" "destroy")
+  )
+)
+
+

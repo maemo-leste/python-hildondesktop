@@ -1,0 +1,42 @@
+;; -*- scheme -*-
+; object definitions ...
+;; Enumerations and flags ...
+
+
+;; From hd-heartbeat.h
+
+(define-function hd_heartbeat_source_new
+  (c-name "hd_heartbeat_source_new")
+  (is-constructor-of "HdHeartbeatSource")
+  (return-type "GSource*")
+  (parameters
+    '("guint" "mintime")
+    '("guint" "maxtime")
+  )
+)
+
+(define-function hd_heartbeat_add
+  (c-name "hd_heartbeat_add")
+  (return-type "guint")
+  (parameters
+    '("guint" "mintime")
+    '("guint" "maxtime")
+    '("GSourceFunc" "function")
+    '("gpointer" "data")
+  )
+)
+
+(define-function hd_heartbeat_add_full
+  (c-name "hd_heartbeat_add_full")
+  (return-type "guint")
+  (parameters
+    '("gint" "priority")
+    '("guint" "mintime")
+    '("guint" "maxtime")
+    '("GSourceFunc" "function")
+    '("gpointer" "data")
+    '("GDestroyNotify" "notify")
+  )
+)
+
+

@@ -1,0 +1,86 @@
+;; -*- scheme -*-
+; object definitions ...
+(define-object PluginItem
+  (in-module "HDHome")
+  (parent "GtkWindow")
+  (c-name "HDHomePluginItem")
+  (gtype-id "H_TYPE_D_HOME_PLUGIN_ITEM")
+)
+
+;; Enumerations and flags ...
+
+(define-enum PluginItemResizeType
+  (in-module "HDHome")
+  (c-name "HDHomePluginItemResizeType")
+  (gtype-id "H_TYPE_D_HOME_PLUGIN_ITEM_RESIZE_TYPE")
+  (values
+    '("none" "HD_HOME_PLUGIN_ITEM_RESIZE_NONE")
+    '("vertical" "HD_HOME_PLUGIN_ITEM_RESIZE_VERTICAL")
+    '("horizontal" "HD_HOME_PLUGIN_ITEM_RESIZE_HORIZONTAL")
+    '("both" "HD_HOME_PLUGIN_ITEM_RESIZE_BOTH")
+  )
+)
+
+
+;; From hd-home-plugin-item.h
+
+(define-function hd_home_plugin_item_get_type
+  (c-name "hd_home_plugin_item_get_type")
+  (return-type "GType")
+)
+
+(define-method get_dl_filename
+  (of-object "HDHomePluginItem")
+  (c-name "hd_home_plugin_item_get_dl_filename")
+  (return-type "const-gchar*")
+)
+
+(define-method get_dbus_connection
+  (of-object "HDHomePluginItem")
+  (c-name "hd_home_plugin_item_get_dbus_connection")
+  (return-type "DBusConnection*")
+  (parameters
+    '("DBusBusType" "type")
+    '("DBusError*" "error")
+  )
+)
+
+(define-method get_dbus_g_connection
+  (of-object "HDHomePluginItem")
+  (c-name "hd_home_plugin_item_get_dbus_g_connection")
+  (return-type "DBusGConnection*")
+  (parameters
+    '("DBusBusType" "type")
+    '("GError**" "error")
+  )
+)
+
+(define-method heartbeat_signal_add
+  (of-object "HDHomePluginItem")
+  (c-name "hd_home_plugin_item_heartbeat_signal_add")
+  (return-type "guint")
+  (parameters
+    '("guint" "mintime")
+    '("guint" "maxtime")
+    '("GSourceFunc" "source_func")
+    '("gpointer" "data")
+    '("GDestroyNotify" "destroy")
+  )
+)
+
+(define-method get_applet_id
+  (of-object "HDHomePluginItem")
+  (c-name "hd_home_plugin_item_get_applet_id")
+  (return-type "gchar*")
+)
+
+(define-method set_settings
+  (of-object "HDHomePluginItem")
+  (c-name "hd_home_plugin_item_set_settings")
+  (return-type "none")
+  (parameters
+    '("gboolean" "settings")
+  )
+)
+
+

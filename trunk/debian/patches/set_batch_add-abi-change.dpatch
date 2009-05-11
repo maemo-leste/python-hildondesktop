@@ -1,0 +1,56 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## set_batch_add-abi-change.dpatch by Steve Kowalik <stevenk@ubuntu.com>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Remove a number of functions, hildon-desktop doesn't support them.
+
+@DPATCH@
+diff -urNad ubuntu~/libhildondesktop/hildondesktop.defs ubuntu/libhildondesktop/hildondesktop.defs
+--- ubuntu~/libhildondesktop/hildondesktop.defs	2009-03-12 16:14:58.000000000 +1100
++++ ubuntu/libhildondesktop/hildondesktop.defs	2009-03-12 16:15:45.000000000 +1100
+@@ -375,21 +375,6 @@
+   (return-type "GtkWidget*")
+ )
+ 
+-(define-method set_layout_mode
+-  (of-object "HildonHomeArea")
+-  (c-name "hildon_home_area_set_layout_mode")
+-  (return-type "none")
+-  (parameters
+-    '("gboolean" "layout_mode")
+-  )
+-)
+-
+-(define-method get_layout_mode
+-  (of-object "HildonHomeArea")
+-  (c-name "hildon_home_area_get_layout_mode")
+-  (return-type "gboolean")
+-)
+-
+ (define-method save_configuration
+   (of-object "HildonHomeArea")
+   (c-name "hildon_home_area_save_configuration")
+@@ -416,23 +401,6 @@
+   (return-type "gboolean")
+ )
+ 
+-(define-method get_overlaps
+-  (of-object "HildonHomeArea")
+-  (c-name "hildon_home_area_get_overlaps")
+-  (return-type "gboolean")
+-)
+-
+-(define-method set_batch_add
+-  (of-object "HildonHomeArea")
+-  (c-name "hildon_home_area_set_batch_add")
+-  (return-type "none")
+-  (parameters
+-    '("gboolean" "batch_add")
+-  )
+-)
+-
+-
+-
+ ;; From /usr/include/libhildondesktop/libhildondesktop/hildon-home-titlebar.h
+ 
+ (define-function hildon_home_titlebar_get_type

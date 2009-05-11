@@ -1,0 +1,50 @@
+;; -*- scheme -*-
+; object definitions ...
+(define-object Loader
+  (in-module "HDPlugin")
+  (parent "GObject")
+  (c-name "HDPluginLoader")
+  (gtype-id "H_TYPE_D_PLUGIN_LOADER")
+)
+
+;; Enumerations and flags ...
+
+(define-enum LoaderErrorCode
+  (in-module "HDPlugin")
+  (c-name "HDPluginLoaderErrorCode")
+  (gtype-id "H_TYPE_D_PLUGIN_LOADER_ERROR_CODE")
+  (values
+    '("unknown" "HD_PLUGIN_LOADER_ERROR_UNKNOWN")
+    '("open" "HD_PLUGIN_LOADER_ERROR_OPEN")
+    '("symbol" "HD_PLUGIN_LOADER_ERROR_SYMBOL")
+    '("init" "HD_PLUGIN_LOADER_ERROR_INIT")
+    '("keyfile" "HD_PLUGIN_LOADER_ERROR_KEYFILE")
+    '("unknown-type" "HD_PLUGIN_LOADER_ERROR_UNKNOWN_TYPE")
+  )
+)
+
+
+;; From hd-plugin-loader.h
+
+(define-function hd_plugin_loader_get_type
+  (c-name "hd_plugin_loader_get_type")
+  (return-type "GType")
+)
+
+(define-function hd_plugin_loader_error_quark
+  (c-name "hd_plugin_loader_error_quark")
+  (return-type "GQuark")
+)
+
+(define-method load
+  (of-object "HDPluginLoader")
+  (c-name "hd_plugin_loader_load")
+  (return-type "GObject*")
+  (parameters
+    '("const-gchar*" "plugin_id")
+    '("GKeyFile*" "keyfile")
+    '("GError**" "error")
+  )
+)
+
+

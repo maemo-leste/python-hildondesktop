@@ -1,0 +1,18 @@
+;; -*- scheme -*-
+; object definitions ...
+;; Enumerations and flags ...
+
+
+;; From hd-pvr-texture.h
+
+(define-function hd_pvr_texture_save
+  (c-name "hd_pvr_texture_save")
+  (return-type "gboolean")
+  (parameters
+    '("const-gchar*" "file")
+    '("GdkPixbuf*" "pixbuf")
+    '("GError**" "error")
+  )
+)
+
+
