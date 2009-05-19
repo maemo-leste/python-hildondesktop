@@ -76,16 +76,10 @@ hd_plugin_loader_python_open_module (HDPluginLoaderPython *loader,
   g_return_val_if_fail (HD_IS_PLUGIN_LOADER_PYTHON (loader), NULL);
 
   priv = loader->priv;
-  keyfile = hd_plugin_configuration_get_items_key_file(HD_PLUGIN_CONFIGURATION (loader));
-  
-  /*
+  /*keyfile = hd_plugin_configuration_get_items_key_file(HD_PLUGIN_CONFIGURATION (loader));*/
+
   module_file = g_key_file_get_string (keyfile,
-                                       HD_PLUGIN_CONFIG_GROUP,
-                                       HD_PLUGIN_CONFIG_KEY_PATH,
-                                       &keyfile_error);
-  */
-  module_file = g_key_file_get_string (keyfile,
-                                       "Desktop entry",
+                                       "Desktop Entry",
                                        "X-Path",
                                        &keyfile_error);
  
