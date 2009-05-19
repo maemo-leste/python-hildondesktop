@@ -1,7 +1,7 @@
 ;; -*- scheme -*-
 ; object definitions ...
-(define-object Module
-  (in-module "HDPlugin")
+(define-object PluginModule
+  (in-module "HildonDesktop")
   (parent "GTypeModule")
   (c-name "HDPluginModule")
   (gtype-id "HD_TYPE_PLUGIN_MODULE")
@@ -19,7 +19,7 @@
 
 (define-function hd_plugin_module_new
   (c-name "hd_plugin_module_new")
-  (is-constructor-of "HdPluginModule")
+  (is-constructor-of "HDPluginModule")
   (return-type "HDPluginModule*")
   (parameters
     '("const-gchar*" "path")

@@ -1,9 +1,9 @@
 ;; -*- scheme -*-
 ; object definitions ...
 (define-object Item
-  (in-module "HDPlugin")
+  (in-module "HildonDesktop")
   (c-name "HDPluginItem")
-  (gtype-id "H_TYPE_D_PLUGIN_ITEM")
+  (gtype-id "HD_TYPE_PLUGIN_ITEM")
 )
 
 ;; Enumerations and flags ...

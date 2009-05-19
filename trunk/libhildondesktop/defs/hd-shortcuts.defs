@@ -1,7 +1,7 @@
 ;; -*- scheme -*-
 ; object definitions ...
-(define-object s
-  (in-module "HDShortcut")
+(define-object Shortcuts
+  (in-module "HildonDesktop")
   (parent "GObject")
   (c-name "HDShortcuts")
   (gtype-id "H_TYPE_D_SHORTCUTS")

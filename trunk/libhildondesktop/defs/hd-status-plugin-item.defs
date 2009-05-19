@@ -1,7 +1,7 @@
 ;; -*- scheme -*-
 ; object definitions ...
-(define-object PluginItem
-  (in-module "HDStatus")
+(define-object StatusPluginItem
+  (in-module "HildonDesktop")
   (parent "GtkBin")
   (c-name "HDStatusPluginItem")
   (gtype-id "H_TYPE_D_STATUS_PLUGIN_ITEM")

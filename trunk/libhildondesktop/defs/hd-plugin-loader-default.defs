@@ -1,7 +1,7 @@
 ;; -*- scheme -*-
 ; object definitions ...
-(define-object LoaderDefault
-  (in-module "HDPlugin")
+(define-object PluginLoaderDefault
+  (in-module "HildonDesktop")
   (parent "HDPluginLoader")
   (c-name "HDPluginLoaderDefault")
   (gtype-id "H_TYPE_D_PLUGIN_LOADER_DEFAULT")

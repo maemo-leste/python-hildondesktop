@@ -1,7 +1,7 @@
 ;; -*- scheme -*-
 ; object definitions ...
-(define-object Manager
-  (in-module "HDPlugin")
+(define-object PluginManager
+  (in-module "HildonDesktop")
   (parent "HDPluginConfiguration")
   (c-name "HDPluginManager")
   (gtype-id "H_TYPE_D_PLUGIN_MANAGER")

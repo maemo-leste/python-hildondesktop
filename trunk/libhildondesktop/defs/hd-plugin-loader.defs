@@ -1,7 +1,7 @@
 ;; -*- scheme -*-
 ; object definitions ...
-(define-object Loader
-  (in-module "HDPlugin")
+(define-object PluginLoader
+  (in-module "HildonDesktop")
   (parent "GObject")
   (c-name "HDPluginLoader")
   (gtype-id "H_TYPE_D_PLUGIN_LOADER")
@@ -9,8 +9,8 @@
 
 ;; Enumerations and flags ...
 
-(define-enum LoaderErrorCode
-  (in-module "HDPlugin")
+(define-enum PluginLoaderErrorCode
+  (in-module "HildonDesktop")
   (c-name "HDPluginLoaderErrorCode")
   (gtype-id "H_TYPE_D_PLUGIN_LOADER_ERROR_CODE")
   (values

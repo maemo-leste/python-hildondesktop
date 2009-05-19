@@ -1,7 +1,7 @@
 ;; -*- scheme -*-
 ; object definitions ...
-(define-object File
-  (in-module "HDConfig")
+(define-object ConfigFile
+  (in-module "HildonDesktop")
   (parent "GObject")
   (c-name "HDConfigFile")
   (gtype-id "H_TYPE_D_CONFIG_FILE")

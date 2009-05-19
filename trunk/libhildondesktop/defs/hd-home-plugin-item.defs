@@ -1,7 +1,7 @@
 ;; -*- scheme -*-
 ; object definitions ...
-(define-object PluginItem
-  (in-module "HDHome")
+(define-object HomeItem
+  (in-module "HildonDesktop")
   (parent "GtkWindow")
   (c-name "HDHomePluginItem")
   (gtype-id "H_TYPE_D_HOME_PLUGIN_ITEM")
@@ -9,8 +9,8 @@
 
 ;; Enumerations and flags ...
 
-(define-enum PluginItemResizeType
-  (in-module "HDHome")
+(define-enum HomePluginItemResizeType
+  (in-module "HildonDesktop")
   (c-name "HDHomePluginItemResizeType")
   (gtype-id "H_TYPE_D_HOME_PLUGIN_ITEM_RESIZE_TYPE")
   (values
