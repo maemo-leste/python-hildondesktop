@@ -4,7 +4,7 @@
   (in-module "HildonDesktop")
   (parent "GtkWindow")
   (c-name "HDHomePluginItem")
-  (gtype-id "H_TYPE_D_HOME_PLUGIN_ITEM")
+  (gtype-id "HD_TYPE_HOME_PLUGIN_ITEM")
 )
 
 ;; Enumerations and flags ...
@@ -12,7 +12,7 @@
 (define-enum HomePluginItemResizeType
   (in-module "HildonDesktop")
   (c-name "HDHomePluginItemResizeType")
-  (gtype-id "H_TYPE_D_HOME_PLUGIN_ITEM_RESIZE_TYPE")
+  (gtype-id "HD_TYPE_HOME_PLUGIN_ITEM_RESIZE_TYPE")
   (values
     '("none" "HD_HOME_PLUGIN_ITEM_RESIZE_NONE")
     '("vertical" "HD_HOME_PLUGIN_ITEM_RESIZE_VERTICAL")
