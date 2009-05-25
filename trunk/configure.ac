@@ -30,9 +30,6 @@ PKG_CHECK_MODULES(LIBHILDONDESKTOP, libhildondesktop-1)
 AC_SUBST(LIBHILDONDESKTOP_LIBS)
 AC_SUBST(LIBHILDONDESKTOP_CFLAGS)
 
-PKG_CHECK_MODULES(HILDONDESKTOP, libhildondesktop-1)
-AC_SUBST(HILDONDESKTOP_CFLAGS)
-
 hildondesktopincludedir=`pkg-config libhildondesktop-1 --variable=includedir`
 AC_SUBST(hildondesktopincludedir)
 
@@ -48,9 +45,6 @@ AC_SUBST(hildondesktoplibdir)
 
 if test "x$have_python" != "xno"; then
         AM_PATH_PYTHON([2.5])
-        #if test "x$PYTHON" = "x:"; then
-        #        have_python=no
-        #fi
 fi
 
 dnl if test "x$have_python" != "xno"; then
@@ -115,10 +109,6 @@ if test "x$have_python" != "xno"; then
         fi
 
 	AC_SUBST(NO_STRICT_ALIASING_CFLAGS)
-fi
-
-if test "x$have_python" = "xno"; then
-        AC_MSG_ERROR([Python not found])
 fi
 
 AC_CONFIG_FILES([

@@ -25,7 +25,6 @@
 #ifndef __HD_PLUGIN_LOADER_PYTHON_H__
 #define __HD_PLUGIN_LOADER_PYTHON_H__
 
-//#include <hildon-desktop/hd-plugin-loader.h>
 #include <libhildondesktop/libhildondesktop.h>
 
 G_BEGIN_DECLS

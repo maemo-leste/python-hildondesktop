@@ -1,30 +1,30 @@
 /*** BEGIN file-header ***/
-/* -*- Mode: C; c-basic-offset: 4 -*-
- * python-hildon - Python bindings for the Hildon toolkit.
+/*
+ * This file is part of python-hildondesktop
  *
- * hildon-types: definitions that should be in hildon
- *               itself but are not yet.
+ * Copyright (C) 2006 Nokia Corporation.
+ *
+ * Author:  Lucas Rocha <lucas.rocha@nokia.com>
+ * Contact: Karoliina Salminen <karoliina.t.salminen@nokia.com>
  *
  * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
+ * modify it under the terms of the GNU Lesser General Public License
+ * version 2.1 as published by the Free Software Foundation.
  *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * This library is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
- * USA
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA
+ *
  */
 
 #include <glib-object.h>
-
-#include "hildondesktop-includes.h"
-
+#include <libhildondesktop/libhildondesktop.h>
 /*** END file-header ***/
 /*** BEGIN file-production ***/
 
@@ -33,6 +33,6 @@
 /*** END file-production ***/
 /*** BEGIN value-header ***/
 GType @enum_name@_get_type (void) G_GNUC_CONST;
-#define HILDON_TYPE_@ENUMSHORT@ (@enum_name@_get_type())
+#define @ENUMPREFIX@_TYPE_@ENUMSHORT@ (@enum_name@_get_type())
 
 /*** END value-header ***/

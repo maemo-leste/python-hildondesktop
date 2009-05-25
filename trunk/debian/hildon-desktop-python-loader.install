@@ -1,1 +1,1 @@
-usr/lib/hildon-desktop/loaders/libpythonpluginloader*.*
+usr/lib/hildon-desktop/loaders/*.so

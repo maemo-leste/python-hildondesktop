@@ -1,11 +1,22 @@
 python-hildondesktop (0.0.2-1maemo1) unstable; urgency=low
 
-  * New version from Ubuntu
-  * Drop python2.6 requirement
-  * Change 'dist-packages' to 'site-packages' in install file
-  * Change hildon-desktop-dev to libhildondesktop1-dev in Build-Depends
+  [ Bruno dos Santos de Araujo ]
+  * New version, based on Ubuntu sources.
+  * Drop python2.6 requirement and remove hard-coded reference to
+    dist-packages in .install file.
 
- -- Bruno dos Santos de Araujo <bruno.araujo@indt.org.br>  Wed,  6 May 2009 10:08:27 -0400
+  [ Anderson Lizardo ]
+  * Remove references to "hildondesktop" in configure.ac/Makefile.am (only
+    libhildondesktop exists now).
+  * Remove old patch and the patch system.
+  * debian/rules: cleanup.
+  * Update binding to the new fremantle API: new hildondesktop.defs,
+    hildondesktop.override, a few helper .c/.h files.
+  * Add hildondesktop_gen_defs.sh script to help updating binding definition
+    files.
+  * Avoid installing unnecessary files in loader directory.
+
+ -- Anderson Lizardo <anderson.lizardo@indt.org.br>  Fri, 22 May 2009 16:18:23 -0400
 
 python-hildondesktop (0.0.2-0ubuntu5) jaunty; urgency=low
 

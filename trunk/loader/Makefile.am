@@ -10,12 +10,13 @@ libpythonpluginloader_la_LIBADD = \
 	$(PYGOBJECT_LIBS)
 
 libpythonpluginloader_la_CFLAGS =  \
-	$(HILDONDESKTOP_CFLAGS)    \
    	$(LIBHILDONDESKTOP_CFLAGS) \
 	$(PYTHON_CFLAGS)           \
 	$(PYGTK_CFLAGS)            \
 	$(PYGOBJECT_CFLAGS)        \
 	-DHD_DESKTOP_MODULE_PATH=\"$(hildondesktoplibdir)\"
+
+libpythonpluginloader_la_LDFLAGS = -no-undefined -module -avoid-version
 
 libpythonpluginloader_la_SOURCES = \
 	hd-plugin-loader-python.c  \

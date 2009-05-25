@@ -6,8 +6,6 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-include /usr/share/dpatch/dpatch.make
-
 CFLAGS = -Wall -g
 
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
@@ -24,13 +22,13 @@ ifneq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
 	CFLAGS += -ggdb -DDEBUG
 endif
 
-export PYTHON=python2.5
+PY = $(shell pyversions -d)
 
 configure: configure-stamp
-configure-stamp: patch-stamp
+configure-stamp:
 	dh_testdir
 	./autogen.sh
-	CFLAGS="$(CFLAGS)" ./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --sysconfdir=/etc --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info --disable-dependency-tracking
+	PYTHON="$(PY)" CFLAGS="$(CFLAGS)" ./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --sysconfdir=/etc --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info --disable-dependency-tracking
 	touch $@
 
 build: build-stamp
@@ -39,13 +37,11 @@ build-stamp: configure-stamp
 	$(MAKE)
 	touch $@
 
-clean: clean-patched unpatch
-clean-patched:
+clean:
 	dh_testdir
 	dh_testroot
 	rm -f *-stamp
 	[ ! -f Makefile ] || $(MAKE) distclean
-	rm -fr debian/build	
 	dh_clean
 
 install: install-stamp
@@ -53,7 +49,7 @@ install-stamp: build-stamp
 	dh_testdir
 	dh_testroot
 	dh_installdirs
-	$(MAKE) install DESTDIR=$(CURDIR)/debian/build
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp
 	touch $@
 
 binary-indep: build install
@@ -63,7 +59,7 @@ binary-arch: build install
 	dh_testroot
 	dh_installchangelogs 
 	dh_installdocs
-	dh_install --sourcedir=debian/build -v
+	dh_install --sourcedir=debian/tmp -v
 	dh_installmime
 	dh_installman
 	dh_link
@@ -79,10 +75,4 @@ binary-arch: build install
 
 binary: binary-indep binary-arch
 
-get-orig-source:
-	bzr export python-hildondesktop lp:~vcs-imports/python-hildondesktop/trunk
-	rm -rf python-hildondesktop/debian
-	tar zcf python-hildondesktop.orig.tar.gz python-hildondesktop
-	rm -rf python-hildondesktop
-
-.PHONY: build clean binary-indep binary-arch binary install get-orig-source
+.PHONY: build clean binary-indep binary-arch binary install

@@ -30,11 +30,9 @@
 #include <pygobject.h>
 #include <pygtk/pygtk.h>
 
-//#include <libhildondesktop/hildon-desktop-plugin.h>
 #include <libhildondesktop/libhildondesktop.h>
 
 #include "hd-plugin-loader-python.h"
-//#include <hildon-desktop/hd-config.h>
 
 #define HD_PLUGIN_LOADER_PYTHON_GET_PRIVATE(obj) \
         (G_TYPE_INSTANCE_GET_PRIVATE ((obj), HD_TYPE_PLUGIN_LOADER_PYTHON, HDPluginLoaderPythonPrivate))
@@ -60,29 +58,29 @@ hd_plugin_loader_python_destroy_plugin (GtkObject *object, gpointer user_data)
   PyGC_Collect();
 }
 
-static GObject* 
-hd_plugin_loader_python_open_module (HDPluginLoaderPython *loader,
-                                     const gchar            *plugin_id,
-                                     GKeyFile               *keyfile,
-                                     GError                **error)
+static GObject *
+hd_plugin_loader_python_open_module (HDPluginLoaderPython  *loader,
+                                     const gchar           *plugin_id,
+                                     GKeyFile              *keyfile,
+                                     GError               **error)
 {
   HDPluginLoaderPythonPrivate *priv;
-  PyObject *pModules, *pModule, *pReload, *pDict, *pFunc, *pList;
+  PyObject *pModules, *pModule, *pReload, *pDict, *pFunc, *pObject;
+  GObject *object = NULL;
   GError *keyfile_error = NULL;
   gchar *module_file = NULL;
   gchar *module_name = NULL;
-  GObject *object = NULL;
 
   g_return_val_if_fail (HD_IS_PLUGIN_LOADER_PYTHON (loader), NULL);
 
   priv = loader->priv;
-  /*keyfile = hd_plugin_configuration_get_items_key_file(HD_PLUGIN_CONFIGURATION (loader));*/
 
   module_file = g_key_file_get_string (keyfile,
                                        "Desktop Entry",
                                        "X-Path",
                                        &keyfile_error);
- 
+  g_strstrip (module_file);
+
   if (keyfile_error)
   {
     g_propagate_error (error, keyfile_error);
@@ -104,14 +102,14 @@ hd_plugin_loader_python_open_module (HDPluginLoaderPython *loader,
   pModules = PySys_GetObject ("modules");
 
   g_assert (pModules != NULL);
-  
+
   pModule = PyDict_GetItemString (pModules, module_name);
-  
+
   if (pModule == NULL)
   {
     pModule = PyImport_ImportModule (module_name);
 
-    if (pModule == NULL) 
+    if (pModule == NULL)
     {
       PyErr_Print ();
       PyErr_Clear ();
@@ -122,7 +120,7 @@ hd_plugin_loader_python_open_module (HDPluginLoaderPython *loader,
   else
   {
     pReload = PyImport_ReloadModule (pModule);
-  
+
     if (pReload == NULL)
     {
       PyErr_Print ();
@@ -138,45 +136,39 @@ hd_plugin_loader_python_open_module (HDPluginLoaderPython *loader,
     }
   }
 
-  if (pModule != NULL) 
+  if (pModule != NULL)
   {
     pDict = PyModule_GetDict (pModule);
 
-    pFunc = PyDict_GetItemString (pDict, "hd_plugin_get_objects");
+    pFunc = PyDict_GetItemString (pDict, "hd_plugin_get_object");
 
-    if (pFunc != NULL && PyCallable_Check (pFunc)) 
+    if (pFunc != NULL && PyCallable_Check (pFunc))
     {
-      pList = PyObject_CallObject (pFunc, NULL);
+      pObject = PyObject_CallObject (pFunc, NULL);
 
-      if (pList != NULL && PyList_Check (pList)) 
+      if (pObject != NULL /*&& PyList_Check (pList)*/)
       {
-        PyObject *pObject = PyList_GetItem (pList, 0);
-        if (pObject != NULL)
-        {
-            object = g_object_ref(((PyGObject *) pObject)->obj);
-            g_signal_connect (G_OBJECT (object), 
-                              "destroy", 
-                              G_CALLBACK (hd_plugin_loader_python_destroy_plugin), 
-                              NULL);
-            /* Increase reference count of the module for each "extra"
-               plugin instance so that when no more plugin instances exist
-               the module is unloaded correctly. */
-            Py_INCREF (pModule);
+        object = g_object_ref(((PyGObject *) pObject)->obj);
+        g_signal_connect (G_OBJECT (object),
+                          "destroy",
+                          G_CALLBACK (hd_plugin_loader_python_destroy_plugin), 
+                          NULL);
+        /* Increase reference count of the module for each "extra"
+           plugin instance so that when no more plugin instances exist
+           the module is unloaded correctly. */
+        Py_INCREF (pModule);
 
-            g_object_set_data (object, "object", pObject);
-            g_object_set_data (object, "module", pModule);
-        }
-        Py_DECREF(pList);
+        g_object_set_data (object, "object", pObject);
+        g_object_set_data (object, "module", pModule);
       }
       else 
       {
-        Py_XDECREF (pList);
         Py_DECREF (pModule);
 
         PyErr_Print ();
         PyErr_Clear ();
 
-        g_warning ("Failed to call hd_plugin_get_objects in python module");
+        g_warning ("Failed to call hd_plugin_get_object in python module");
 
         return NULL;
       }
@@ -189,7 +181,7 @@ hd_plugin_loader_python_open_module (HDPluginLoaderPython *loader,
         PyErr_Clear ();
       }
 
-      g_warning ("Cannot find function \"%s\"", "hd_plugin_get_objects");
+      g_warning ("Cannot find function \"hd_plugin_get_object\"");
     }
   }
   else 
@@ -226,17 +218,16 @@ hd_plugin_loader_python_load (HDPluginLoader *loader,
     return NULL;
   }
 
-  object = 
-     hd_plugin_loader_python_open_module (HD_PLUGIN_LOADER_PYTHON (loader), plugin_id, keyfile, &local_error);
+  /* Open the module and return plugin instance */
+  object =
+     hd_plugin_loader_python_open_module (HD_PLUGIN_LOADER_PYTHON (loader),
+                                          plugin_id,
+                                          keyfile,
+                                          &local_error);
 
   if (local_error) 
   {
     g_propagate_error (error, local_error);
-
-    if (object)
-    {
-      g_free (object);
-    }
 
     return NULL;
   }
@@ -299,11 +290,11 @@ hd_plugin_loader_python_class_init (HDPluginLoaderPythonClass *class)
 G_MODULE_EXPORT gchar *
 hd_plugin_loader_module_type (void)
 {
-  return "python"; /*FIXME: clean me up*/
+  return "python"; /* FIXME: clean me up */
 }
 
 G_MODULE_EXPORT HDPluginLoader *
 hd_plugin_loader_module_get_instance (void)
 {
-  return g_object_new (HD_TYPE_PLUGIN_LOADER_PYTHON,NULL);
+  return g_object_new (HD_TYPE_PLUGIN_LOADER_PYTHON, NULL);
 }
