@@ -8,6 +8,7 @@ Standards-Version: 3.8.0
 
 Package: python-hildondesktop
 Architecture: any
+Provides: python2.5-hildondesktop
 Depends: ${python:Depends}, ${shlibs:Depends}, ${misc:Depends}
 Description: Python bindings for libhildondesktop
  Python binding for set of widgets provided by libhildondesktop
@@ -15,7 +16,7 @@ Description: Python bindings for libhildondesktop
 Package: hildon-desktop-python-loader
 Section: libs
 Architecture: any
-Depends: hildon-desktop, ${shlibs:Depends}, ${python:Depends}, ${misc:Depends}
+Depends: hildon-desktop, ${shlibs:Depends}, ${python:Depends}, ${misc:Depends}, python-hildondesktop
 Description: Hildon Desktop Python Plugin Loader
  Plugin Loader for Hildon Desktop for loading Python plugins
 

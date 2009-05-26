@@ -58,6 +58,82 @@ hd_plugin_loader_python_destroy_plugin (GtkObject *object, gpointer user_data)
   PyGC_Collect();
 }
 
+static int
+hd_plugin_loader_python_check_type (PyObject *pObject)
+{
+  PyObject *module;
+  PyTypeObject *PyHDHomePluginItem_Type;
+  int ret = 0;
+
+  if ((module = PyImport_ImportModule ("hildondesktop")) != NULL)
+  {
+    PyHDHomePluginItem_Type = (PyTypeObject *)PyObject_GetAttrString(module, "HomePluginItem");
+    if (PyHDHomePluginItem_Type == NULL)
+    {
+      PyErr_SetString (PyExc_ImportError, "cannot import name HomePluginItem from hildondesktop");
+    }
+    else if (pygobject_check(pObject, PyHDHomePluginItem_Type))
+    {
+      ret = 1;
+    }
+    else
+    {
+      PyErr_SetString (PyExc_TypeError, "returned object must be a HDHomePluginItem");
+    }
+    Py_XDECREF (PyHDHomePluginItem_Type);
+  }
+  else
+  {
+    PyErr_SetString (PyExc_ImportError, "could not import hildondesktop");
+  }
+  Py_XDECREF (module);
+
+  return ret;
+}
+
+static PyObject *
+hd_plugin_loader_python_import_module (gchar *module_name)
+{
+  PyObject *pModules, *pModule, *pReload;
+
+  pModules = PyImport_GetModuleDict ();
+
+  g_assert (pModules != NULL);
+
+  pModule = PyDict_GetItemString (pModules, module_name);
+
+  if (pModule == NULL)
+  {
+    pModule = PyImport_ImportModule (module_name);
+
+    if (pModule == NULL)
+    {
+      PyErr_Print ();
+      PyErr_Clear ();
+
+      g_warning ("Could not initialize Python module '%s'", module_name);
+    }
+  }
+  else
+  {
+    pReload = PyImport_ReloadModule (pModule);
+
+    if (pReload == NULL)
+    {
+      PyErr_Print ();
+      PyErr_Clear ();
+
+      g_warning ("Could not reload Python module '%s'\n"
+                 "Falling back to previous version",
+                 module_name);
+
+      Py_INCREF (pModule);
+    }
+  }
+
+  return pModule;
+}
+
 static GObject *
 hd_plugin_loader_python_open_module (HDPluginLoaderPython  *loader,
                                      const gchar           *plugin_id,
@@ -65,7 +141,7 @@ hd_plugin_loader_python_open_module (HDPluginLoaderPython  *loader,
                                      GError               **error)
 {
   HDPluginLoaderPythonPrivate *priv;
-  PyObject *pModules, *pModule, *pReload, *pDict, *pFunc, *pObject;
+  PyObject *pModule, *pDict, *pFunc, *pObject;
   GObject *object = NULL;
   GError *keyfile_error = NULL;
   gchar *module_file = NULL;
@@ -99,42 +175,15 @@ hd_plugin_loader_python_open_module (HDPluginLoaderPython  *loader,
     module_name = module_file; 
   }
 
-  pModules = PySys_GetObject ("modules");
-
-  g_assert (pModules != NULL);
-
-  pModule = PyDict_GetItemString (pModules, module_name);
-
-  if (pModule == NULL)
+  if (g_str_has_suffix (module_name, ".py"))
   {
-    pModule = PyImport_ImportModule (module_name);
-
-    if (pModule == NULL)
-    {
-      PyErr_Print ();
-      PyErr_Clear ();
-
-      g_warning ("Could not initialize Python module '%s'", module_name);
-    }
+    /* Strip extension from module_name */
+    gchar *tmp = g_strndup (module_name, strlen (module_name) - 3);
+    g_free (module_name);
+    module_name = tmp;
   }
-  else
-  {
-    pReload = PyImport_ReloadModule (pModule);
 
-    if (pReload == NULL)
-    {
-      PyErr_Print ();
-      PyErr_Clear ();
-
-      g_warning ("Could not reload Python module '%s'\n"
-                 "Falling back to previous version",
-                 module_name);
-    }
-    else
-    {
-      Py_DECREF(pReload);
-    }
-  }
+  pModule = hd_plugin_loader_python_import_module (module_name);
 
   if (pModule != NULL)
   {
@@ -146,20 +195,25 @@ hd_plugin_loader_python_open_module (HDPluginLoaderPython  *loader,
     {
       pObject = PyObject_CallObject (pFunc, NULL);
 
-      if (pObject != NULL /*&& PyList_Check (pList)*/)
+      if (pObject != NULL)
       {
-        object = g_object_ref(((PyGObject *) pObject)->obj);
-        g_signal_connect (G_OBJECT (object),
-                          "destroy",
-                          G_CALLBACK (hd_plugin_loader_python_destroy_plugin), 
-                          NULL);
-        /* Increase reference count of the module for each "extra"
-           plugin instance so that when no more plugin instances exist
-           the module is unloaded correctly. */
-        Py_INCREF (pModule);
-
-        g_object_set_data (object, "object", pObject);
-        g_object_set_data (object, "module", pModule);
+        if (!hd_plugin_loader_python_check_type (pObject))
+        {
+          PyErr_Print ();
+          PyErr_Clear ();
+          Py_DECREF (pObject);
+          Py_DECREF (pModule);
+        }
+        else
+        {
+          object = g_object_ref(((PyGObject *) pObject)->obj);
+          g_signal_connect (G_OBJECT (object),
+                            "destroy",
+                            G_CALLBACK (hd_plugin_loader_python_destroy_plugin), 
+                            NULL);
+          g_object_set_data (object, "object", pObject);
+          g_object_set_data (object, "module", pModule);
+        }
       }
       else 
       {
@@ -168,28 +222,21 @@ hd_plugin_loader_python_open_module (HDPluginLoaderPython  *loader,
         PyErr_Print ();
         PyErr_Clear ();
 
-        g_warning ("Failed to call hd_plugin_get_object in python module");
-
-        return NULL;
+        g_warning ("Failed to call \"hd_plugin_get_object\" in Python module '%s'", module_name);
       }
     }
     else 
     {
+      Py_DECREF (pModule);
+
       if (PyErr_Occurred ())
       {
         PyErr_Print ();
         PyErr_Clear ();
       }
 
-      g_warning ("Cannot find function \"hd_plugin_get_object\"");
+      g_warning ("Cannot find \"hd_plugin_get_object\" function in Python module '%s'", module_name);
     }
-  }
-  else 
-  {
-    PyErr_Print ();
-    PyErr_Clear ();
-
-    g_warning ("Failed to load \"%s\"", module_name);
   }
 
   g_free (module_name);

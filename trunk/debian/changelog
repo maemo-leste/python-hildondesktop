@@ -1,3 +1,13 @@
+python-hildondesktop (0.0.3-1maemo1) unstable; urgency=low
+
+  * Increment version due to various API changes to match Maemo 5 API.
+  * Simplify loader code and fix some bugs.
+  * Add python2.5-hildondesktop to python-hildondesktop Provides field.
+  * Make hildon-desktop-python-loader depend on python-hildondesktop (used to
+    check if the object returned by the widget is of correct type).
+
+ -- Anderson Lizardo <anderson.lizardo@indt.org.br>  Mon, 25 May 2009 19:01:25 -0400
+
 python-hildondesktop (0.0.2-1maemo1) unstable; urgency=low
 
   [ Bruno dos Santos de Araujo ]
