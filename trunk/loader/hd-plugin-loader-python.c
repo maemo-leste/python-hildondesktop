@@ -61,6 +61,13 @@ hd_plugin_loader_python_destroy_plugin (GtkObject *object, gpointer user_data)
 static int
 hd_plugin_loader_python_check_type (PyObject *pObject)
 {
+/* This block is used for type sanity checks, but at the moment
+ * only HomePluginItem is supported; it needs to be rewritten for
+ * adding support for StatusMenuItem as well. Disabling the whole
+ * block for the time being, until we can spare some time to rewrite
+ * it.
+ */
+#if 0
   PyObject *module;
   PyTypeObject *PyHDHomePluginItem_Type;
   int ret = 0;
@@ -89,6 +96,8 @@ hd_plugin_loader_python_check_type (PyObject *pObject)
   Py_XDECREF (module);
 
   return ret;
+#endif
+  return 1;
 }
 
 static PyObject *

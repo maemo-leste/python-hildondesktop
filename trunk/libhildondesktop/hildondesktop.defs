@@ -184,3 +184,23 @@
     '("type" (optional))
   )
 )
+
+(define-function hd_status_plugin_new
+  (c-name "hd_status_plugin_new")
+  (is-constructor-of "HDStatusPluginItem")
+  (return-type "GtkWidget*")
+  (properties
+    '("type" (optional))
+  )
+)
+
+(define-function hd_status_menu_new
+  (c-name "hd_status_menu_new")
+  (is-constructor-of "HDStatusMenuItem")
+  (return-type "GtkWidget*")
+  (properties
+    '("type" (optional))
+  )
+)
+
+
