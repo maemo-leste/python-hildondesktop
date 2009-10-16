@@ -1,0 +1,206 @@
+;; -*- scheme -*-
+; object definitions ...
+(define-object HomePluginItem
+  (in-module "HildonDesktop")
+  (parent "GtkWindow")
+  (c-name "HDHomePluginItem")
+  (gtype-id "HD_TYPE_HOME_PLUGIN_ITEM")
+)
+
+(define-object StatusPluginItem
+  (in-module "HildonDesktop")
+  (parent "GtkBin")
+  (c-name "HDStatusPluginItem")
+  (gtype-id "HD_TYPE_STATUS_PLUGIN_ITEM")
+)
+
+(define-object StatusMenuItem
+  (in-module "HildonDesktop")
+  (parent "HDStatusPluginItem")
+  (c-name "HDStatusMenuItem")
+  (gtype-id "HD_TYPE_STATUS_MENU_ITEM")
+)
+
+;; Enumerations and flags ...
+
+(define-enum PluginItemResizeType
+  (in-module "HDHome")
+  (c-name "HDHomePluginItemResizeType")
+  (gtype-id "HD_TYPE_HOME_PLUGIN_ITEM_RESIZE_TYPE")
+  (values
+    '("none" "HD_HOME_PLUGIN_ITEM_RESIZE_NONE")
+    '("vertical" "HD_HOME_PLUGIN_ITEM_RESIZE_VERTICAL")
+    '("horizontal" "HD_HOME_PLUGIN_ITEM_RESIZE_HORIZONTAL")
+    '("both" "HD_HOME_PLUGIN_ITEM_RESIZE_BOTH")
+  )
+)
+
+
+;; From hd-home-plugin-item.h
+
+(define-function hd_home_plugin_item_get_type
+  (c-name "hd_home_plugin_item_get_type")
+  (return-type "GType")
+)
+
+(define-method get_dl_filename
+  (of-object "HDHomePluginItem")
+  (c-name "hd_home_plugin_item_get_dl_filename")
+  (return-type "const-gchar*")
+)
+
+(define-method get_dbus_connection
+  (of-object "HDHomePluginItem")
+  (c-name "hd_home_plugin_item_get_dbus_connection")
+  (return-type "DBusConnection*")
+  (parameters
+    '("DBusBusType" "type")
+    '("DBusError*" "error")
+  )
+)
+
+(define-method get_dbus_g_connection
+  (of-object "HDHomePluginItem")
+  (c-name "hd_home_plugin_item_get_dbus_g_connection")
+  (return-type "DBusGConnection*")
+  (parameters
+    '("DBusBusType" "type")
+    '("GError**" "error")
+  )
+)
+
+(define-method heartbeat_signal_add
+  (of-object "HDHomePluginItem")
+  (c-name "hd_home_plugin_item_heartbeat_signal_add")
+  (return-type "guint")
+  (parameters
+    '("guint" "mintime")
+    '("guint" "maxtime")
+    '("GSourceFunc" "source_func")
+    '("gpointer" "data")
+    '("GDestroyNotify" "destroy")
+  )
+)
+
+(define-method get_applet_id
+  (of-object "HDHomePluginItem")
+  (c-name "hd_home_plugin_item_get_applet_id")
+  (return-type "gchar*")
+)
+
+(define-method set_settings
+  (of-object "HDHomePluginItem")
+  (c-name "hd_home_plugin_item_set_settings")
+  (return-type "none")
+  (parameters
+    '("gboolean" "settings")
+  )
+)
+
+
+
+;; From hd-status-plugin-item.h
+
+(define-function hd_status_plugin_item_get_type
+  (c-name "hd_status_plugin_item_get_type")
+  (return-type "GType")
+)
+
+(define-method set_status_area_icon
+  (of-object "HDStatusPluginItem")
+  (c-name "hd_status_plugin_item_set_status_area_icon")
+  (return-type "none")
+  (parameters
+    '("GdkPixbuf*" "icon")
+  )
+)
+
+(define-method set_status_area_widget
+  (of-object "HDStatusPluginItem")
+  (c-name "hd_status_plugin_item_set_status_area_widget")
+  (return-type "none")
+  (parameters
+    '("GtkWidget*" "widget")
+  )
+)
+
+(define-method get_dl_filename
+  (of-object "HDStatusPluginItem")
+  (c-name "hd_status_plugin_item_get_dl_filename")
+  (return-type "const-gchar*")
+)
+
+(define-method get_dbus_connection
+  (of-object "HDStatusPluginItem")
+  (c-name "hd_status_plugin_item_get_dbus_connection")
+  (return-type "DBusConnection*")
+  (parameters
+    '("DBusBusType" "type")
+    '("DBusError*" "error")
+  )
+)
+
+(define-method get_dbus_g_connection
+  (of-object "HDStatusPluginItem")
+  (c-name "hd_status_plugin_item_get_dbus_g_connection")
+  (return-type "DBusGConnection*")
+  (parameters
+    '("DBusBusType" "type")
+    '("GError**" "error")
+  )
+)
+
+(define-method heartbeat_signal_add
+  (of-object "HDStatusPluginItem")
+  (c-name "hd_status_plugin_item_heartbeat_signal_add")
+  (return-type "guint")
+  (parameters
+    '("guint" "mintime")
+    '("guint" "maxtime")
+    '("GSourceFunc" "source_func")
+    '("gpointer" "data")
+    '("GDestroyNotify" "destroy")
+  )
+)
+
+
+
+;; From hd-status-menu-item.h
+
+(define-function hd_status_menu_item_get_type
+  (c-name "hd_status_menu_item_get_type")
+  (return-type "GType")
+)
+
+
+
+; ugly hack to force new constructor API usage
+; (hd_home_plugin_new does not exist)
+(define-function hd_home_plugin_new
+  (c-name "hd_home_plugin_new")
+  (is-constructor-of "HDHomePluginItem")
+  (return-type "GtkWidget*")
+  (properties
+    '("type" (optional))
+  )
+)
+
+(define-function hd_status_plugin_new
+  (c-name "hd_status_plugin_new")
+  (is-constructor-of "HDStatusPluginItem")
+  (return-type "GtkWidget*")
+  (properties
+    '("type" (optional))
+  )
+)
+
+(define-function hd_status_menu_new
+  (c-name "hd_status_menu_new")
+  (is-constructor-of "HDStatusMenuItem")
+  (return-type "GtkWidget*")
+  (properties
+    '("type" (optional))
+  )
+)
+
+
