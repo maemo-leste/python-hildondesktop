@@ -58,48 +58,6 @@ hd_plugin_loader_python_destroy_plugin (GtkObject *object, gpointer user_data)
   PyGC_Collect();
 }
 
-static int
-hd_plugin_loader_python_check_type (PyObject *pObject)
-{
-/* This block is used for type sanity checks, but at the moment
- * only HomePluginItem is supported; it needs to be rewritten for
- * adding support for StatusMenuItem as well. Disabling the whole
- * block for the time being, until we can spare some time to rewrite
- * it.
- */
-#if 0
-  PyObject *module;
-  PyTypeObject *PyHDHomePluginItem_Type;
-  int ret = 0;
-
-  if ((module = PyImport_ImportModule ("hildondesktop")) != NULL)
-  {
-    PyHDHomePluginItem_Type = (PyTypeObject *)PyObject_GetAttrString(module, "HomePluginItem");
-    if (PyHDHomePluginItem_Type == NULL)
-    {
-      PyErr_SetString (PyExc_ImportError, "cannot import name HomePluginItem from hildondesktop");
-    }
-    else if (pygobject_check(pObject, PyHDHomePluginItem_Type))
-    {
-      ret = 1;
-    }
-    else
-    {
-      PyErr_SetString (PyExc_TypeError, "returned object must be a HDHomePluginItem");
-    }
-    Py_XDECREF (PyHDHomePluginItem_Type);
-  }
-  else
-  {
-    PyErr_SetString (PyExc_ImportError, "could not import hildondesktop");
-  }
-  Py_XDECREF (module);
-
-  return ret;
-#endif
-  return 1;
-}
-
 static PyObject *
 hd_plugin_loader_python_import_module (gchar *module_name)
 {
@@ -143,6 +101,66 @@ hd_plugin_loader_python_import_module (gchar *module_name)
   return pModule;
 }
 
+/* Based on gobject.type_register() and gobject.new() implementations from pygobject */
+static GObject *
+hd_plugin_loader_python_create_object (PyObject    *pClass,
+                                       const gchar *plugin_id)
+{
+  GObject *object = NULL;
+
+  PyObject *pModule = PyImport_ImportModule ("gobject");
+  if (pModule != NULL)
+  {
+    PyObject *pDict = PyModule_GetDict (pModule);
+    PyObject *register_func = PyDict_GetItemString (pDict, "type_register");
+    PyObject *new_func = PyDict_GetItemString (pDict, "new");
+    if (register_func != NULL && new_func != NULL)
+    {
+      PyObject *pRes = PyObject_CallFunctionObjArgs (register_func, pClass, NULL);
+      if (pRes != NULL)
+      {
+        Py_DECREF (pRes);
+        PyObject *args = Py_BuildValue ("(O)", pClass);
+        PyObject *kwargs = Py_BuildValue ("{ss}", "plugin_id", plugin_id);
+        PyObject *pObject = PyObject_Call (new_func, args, kwargs);
+        Py_DECREF (args);
+        Py_DECREF (kwargs);
+        if (pObject != NULL)
+        {
+          object = g_object_ref (((PyGObject *) pObject)->obj);
+          g_object_set_data (object, "object", pObject);
+        }
+        else
+        {
+          PyErr_Print ();
+          PyErr_Clear ();
+          g_warning ("Could not create new plugin object");
+        }
+      }
+      else
+      {
+        PyErr_Print ();
+        PyErr_Clear ();
+        g_warning ("Could not register type for plugin object");
+      }
+    }
+    else
+    {
+      PyErr_Print ();
+      PyErr_Clear ();
+      g_warning ("Could not import functions from gobject");
+    }
+  }
+  else
+  {
+    PyErr_Print ();
+    PyErr_Clear ();
+    g_warning ("Could not import gobject");
+  }
+
+  return object;
+}
+
 static GObject *
 hd_plugin_loader_python_open_module (HDPluginLoaderPython  *loader,
                                      const gchar           *plugin_id,
@@ -150,7 +168,7 @@ hd_plugin_loader_python_open_module (HDPluginLoaderPython  *loader,
                                      GError               **error)
 {
   HDPluginLoaderPythonPrivate *priv;
-  PyObject *pModule, *pDict, *pFunc, *pObject;
+  PyObject *pModule, *pDict;
   GObject *object = NULL;
   GError *keyfile_error = NULL;
   gchar *module_file = NULL;
@@ -198,54 +216,44 @@ hd_plugin_loader_python_open_module (HDPluginLoaderPython  *loader,
   if (pModule != NULL)
   {
     pDict = PyModule_GetDict (pModule);
-
-    pFunc = PyDict_GetItemString (pDict, "hd_plugin_get_object");
-
-    if (pFunc != NULL && PyCallable_Check (pFunc))
+    PyObject *pType = PyDict_GetItemString (pDict, "hd_plugin_type");
+    if (pType != NULL)
     {
-      pObject = PyObject_CallObject (pFunc, NULL);
-
-      if (pObject != NULL)
+      object = hd_plugin_loader_python_create_object (pType, plugin_id);
+      if (object != NULL)
       {
-        if (!hd_plugin_loader_python_check_type (pObject))
-        {
-          PyErr_Print ();
-          PyErr_Clear ();
-          Py_DECREF (pObject);
-          Py_DECREF (pModule);
-        }
-        else
-        {
-          object = g_object_ref(((PyGObject *) pObject)->obj);
-          g_signal_connect (G_OBJECT (object),
-                            "destroy",
-                            G_CALLBACK (hd_plugin_loader_python_destroy_plugin),
-                            NULL);
-          g_object_set_data (object, "object", pObject);
-          g_object_set_data (object, "module", pModule);
-        }
+        g_object_set_data (object, "module", pModule);
+        g_signal_connect (G_OBJECT (object),
+                          "destroy",
+                          G_CALLBACK (hd_plugin_loader_python_destroy_plugin),
+                          NULL);
       }
       else
       {
         Py_DECREF (pModule);
-
-        PyErr_Print ();
-        PyErr_Clear ();
-
-        g_warning ("Failed to call \"hd_plugin_get_object\" in Python module '%s'", module_name);
+        if (PyErr_Occurred ())
+        {
+          PyErr_Print ();
+          PyErr_Clear ();
+        }
+        g_set_error (error,
+                     hd_plugin_loader_error_quark (),
+                     HD_PLUGIN_LOADER_ERROR_KEYFILE,
+                     "Could not create plugin object in Python module '%s'", module_name);
       }
     }
     else
     {
       Py_DECREF (pModule);
-
       if (PyErr_Occurred ())
       {
         PyErr_Print ();
         PyErr_Clear ();
       }
-
-      g_warning ("Cannot find \"hd_plugin_get_object\" function in Python module '%s'", module_name);
+      g_set_error (error,
+                   hd_plugin_loader_error_quark (),
+                   HD_PLUGIN_LOADER_ERROR_KEYFILE,
+                   "Could not find \"hd_plugin_type\" in Python module '%s'", module_name);
     }
   }
 
