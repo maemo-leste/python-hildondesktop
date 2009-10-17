@@ -1,4 +1,4 @@
-AC_INIT(python-hildondesktop, 0.0.3)
+AC_INIT(python-hildondesktop, 0.1.0)
 
 AM_INIT_AUTOMAKE
 
