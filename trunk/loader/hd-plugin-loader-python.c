@@ -39,12 +39,12 @@
 
 G_DEFINE_TYPE (HDPluginLoaderPython, hd_plugin_loader_python, HD_TYPE_PLUGIN_LOADER);
 
-struct _HDPluginLoaderPythonPrivate 
+struct _HDPluginLoaderPythonPrivate
 {
   gboolean initialised;
 };
 
-static void 
+static void
 hd_plugin_loader_python_destroy_plugin (GtkObject *object, gpointer user_data)
 {
   PyObject *pModule, *pObject;
@@ -173,6 +173,7 @@ hd_plugin_loader_python_open_module (HDPluginLoaderPython  *loader,
     return NULL;
   }
 
+  /* Strip directory component from absolute paths */
   if (g_path_is_absolute (module_file))
   {
     module_name = g_path_get_basename (module_file);
@@ -181,12 +182,12 @@ hd_plugin_loader_python_open_module (HDPluginLoaderPython  *loader,
   }
   else
   {
-    module_name = module_file; 
+    module_name = module_file;
   }
 
+  /* Strip extension from module_name */
   if (g_str_has_suffix (module_name, ".py"))
   {
-    /* Strip extension from module_name */
     gchar *tmp = g_strndup (module_name, strlen (module_name) - 3);
     g_free (module_name);
     module_name = tmp;
@@ -218,13 +219,13 @@ hd_plugin_loader_python_open_module (HDPluginLoaderPython  *loader,
           object = g_object_ref(((PyGObject *) pObject)->obj);
           g_signal_connect (G_OBJECT (object),
                             "destroy",
-                            G_CALLBACK (hd_plugin_loader_python_destroy_plugin), 
+                            G_CALLBACK (hd_plugin_loader_python_destroy_plugin),
                             NULL);
           g_object_set_data (object, "object", pObject);
           g_object_set_data (object, "module", pModule);
         }
       }
-      else 
+      else
       {
         Py_DECREF (pModule);
 
@@ -234,7 +235,7 @@ hd_plugin_loader_python_open_module (HDPluginLoaderPython  *loader,
         g_warning ("Failed to call \"hd_plugin_get_object\" in Python module '%s'", module_name);
       }
     }
-    else 
+    else
     {
       Py_DECREF (pModule);
 
@@ -254,16 +255,16 @@ hd_plugin_loader_python_open_module (HDPluginLoaderPython  *loader,
 }
 
 static GObject *
-hd_plugin_loader_python_load (HDPluginLoader *loader, 
-                              const gchar    *plugin_id, 
-                              GKeyFile       *keyfile, 
+hd_plugin_loader_python_load (HDPluginLoader *loader,
+                              const gchar    *plugin_id,
+                              GKeyFile       *keyfile,
                               GError         **error)
 {
   GObject *object = NULL;
   GError *local_error = NULL;
 
   g_return_val_if_fail (loader, NULL);
- 
+
   if (!keyfile)
   {
     g_set_error (error,
@@ -281,7 +282,7 @@ hd_plugin_loader_python_load (HDPluginLoader *loader,
                                           keyfile,
                                           &local_error);
 
-  if (local_error) 
+  if (local_error)
   {
     g_propagate_error (error, local_error);
 
@@ -303,7 +304,7 @@ hd_plugin_loader_python_finalize (GObject *loader)
 
   if (priv->initialised)
   {
-    Py_Finalize (); 
+    Py_Finalize ();
   }
 
   G_OBJECT_CLASS (hd_plugin_loader_python_parent_class)->finalize (loader);
@@ -318,11 +319,11 @@ hd_plugin_loader_python_init (HDPluginLoaderPython *loader)
 
   Py_Initialize ();
   loader->priv->initialised = TRUE;
-  
+
   init_pygobject ();
   init_pygtk ();
 
-  pStr = PyString_FromString (HD_DESKTOP_MODULE_PATH); 
+  pStr = PyString_FromString (HD_DESKTOP_MODULE_PATH);
   pPath = PySys_GetObject ("path");
   PyList_Append (pPath, pStr);
 }
@@ -335,7 +336,7 @@ hd_plugin_loader_python_class_init (HDPluginLoaderPythonClass *class)
 
   object_class = G_OBJECT_CLASS (class);
   loader_class = HD_PLUGIN_LOADER_CLASS (class);
-  
+
   object_class->finalize = hd_plugin_loader_python_finalize;
 
   loader_class->load = hd_plugin_loader_python_load;
