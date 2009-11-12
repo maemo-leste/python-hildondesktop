@@ -15,15 +15,25 @@ python $codegen_dir/h2def.py $headers > hildondesktop.defs
 
 cat >> hildondesktop.defs << "EOF"
 
-; ugly hack to force new constructor API usage
-; (hd_home_plugin_new does not exist)
+; Workaround to force new constructor API usage.
+; These constructors do not exist!
+
+(define-function hd_status_plugin_new
+  (c-name "hd_status_plugin_new")
+  (is-constructor-of "HDStatusPluginItem")
+  (return-type "GtkWidget*")
+)
+
+(define-function hd_status_menu_new
+  (c-name "hd_status_menu_new")
+  (is-constructor-of "HDStatusMenuItem")
+  (return-type "GtkWidget*")
+)
+
 (define-function hd_home_plugin_new
   (c-name "hd_home_plugin_new")
   (is-constructor-of "HDHomePluginItem")
   (return-type "GtkWidget*")
-  (properties
-    '("type" (optional))
-  )
 )
 EOF
 
@@ -48,9 +58,20 @@ function fix_gtype_id()
 	diff -u $defs_file.bak $defs_file && echo "WARNING: $defs_file is unchanged" || true
 	rm $defs_file.bak
 }
+# Mark parameter as optional
+function set_null_ok()
+{
+	defs_file=$1
+	method=$2
+	param=$3
+	sed -i.bak "/^(define-\(method\|function\) $method\$/,/^)/{/^  (parameters/{:l;N;s/\\n.*\"$param\"/& (null-ok) (default \"NULL\")/;Tl}}" $defs_file
+	diff -u $defs_file.bak $defs_file && echo "WARNING: $defs_file is unchanged" || true
+	rm $defs_file.bak
+}
 
 fix_object_name hildondesktop.defs HD HildonDesktop
 fix_gtype_id hildondesktop.defs H_TYPE_D_ HD_TYPE_
+set_null_ok hildondesktop.defs set_status_area_icon icon
 
 echo Generating hildondesktop-types.c and hildondesktop-types.h...
 glib-mkenums --template hildondesktop-types-template.h $headers > hildondesktop-types.h

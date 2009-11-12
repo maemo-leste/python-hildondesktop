@@ -111,7 +111,7 @@
   (c-name "hd_status_plugin_item_set_status_area_icon")
   (return-type "none")
   (parameters
-    '("GdkPixbuf*" "icon")
+    '("GdkPixbuf*" "icon" (null-ok) (default "NULL"))
   )
 )
 
@@ -174,33 +174,23 @@
 
 
 
-; ugly hack to force new constructor API usage
-; (hd_home_plugin_new does not exist)
-(define-function hd_home_plugin_new
-  (c-name "hd_home_plugin_new")
-  (is-constructor-of "HDHomePluginItem")
-  (return-type "GtkWidget*")
-  (properties
-    '("type" (optional))
-  )
-)
+; Workaround to force new constructor API usage.
+; These constructors do not exist!
 
 (define-function hd_status_plugin_new
   (c-name "hd_status_plugin_new")
   (is-constructor-of "HDStatusPluginItem")
   (return-type "GtkWidget*")
-  (properties
-    '("type" (optional))
-  )
 )
 
 (define-function hd_status_menu_new
   (c-name "hd_status_menu_new")
   (is-constructor-of "HDStatusMenuItem")
   (return-type "GtkWidget*")
-  (properties
-    '("type" (optional))
-  )
 )
 
-
+(define-function hd_home_plugin_new
+  (c-name "hd_home_plugin_new")
+  (is-constructor-of "HDHomePluginItem")
+  (return-type "GtkWidget*")
+)
