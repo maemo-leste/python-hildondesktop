@@ -177,6 +177,7 @@ hd_plugin_loader_python_open_module (HDPluginLoaderPython  *loader,
   g_return_val_if_fail (HD_IS_PLUGIN_LOADER_PYTHON (loader), NULL);
 
   priv = loader->priv;
+  (void)priv;
 
   module_file = g_key_file_get_string (keyfile,
                                        "Desktop Entry",
