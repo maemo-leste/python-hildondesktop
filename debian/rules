@@ -63,7 +63,7 @@ binary-arch: build install
 	dh_installmime
 	dh_installman
 	dh_link
-	dh_pysupport
+	dh_python2
 	dh_strip
 	dh_compress
 	dh_fixperms
