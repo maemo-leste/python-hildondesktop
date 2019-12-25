@@ -1,3 +1,10 @@
+python-hildondesktop (0.2.0) unstable; urgency=low
+
+  * Initial Maemo Leste port
+  * Port to Python 2.7
+
+ -- Merlijn Wajer <merlijn@wizzup.org>  Wed, 25 Dec 2019 08:15:09 +0100
+
 python-hildondesktop (0.1.0-1maemo2) unstable; urgency=low
 
   * Allow StatusPluginItem.set_status_area_icon() to accept None as parameter,
