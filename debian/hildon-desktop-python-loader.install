@@ -1,1 +1,1 @@
-usr/lib/hildon-desktop/loaders/*.so
+usr/lib/*/hildon-desktop/loaders/*.so
