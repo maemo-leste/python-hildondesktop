@@ -34,15 +34,18 @@
 
 #include "hd-plugin-loader-python.h"
 
-#define HD_PLUGIN_LOADER_PYTHON_GET_PRIVATE(obj) \
-        (G_TYPE_INSTANCE_GET_PRIVATE ((obj), HD_TYPE_PLUGIN_LOADER_PYTHON, HDPluginLoaderPythonPrivate))
-
-G_DEFINE_TYPE (HDPluginLoaderPython, hd_plugin_loader_python, HD_TYPE_PLUGIN_LOADER);
-
 struct _HDPluginLoaderPythonPrivate
 {
   gboolean initialised;
 };
+
+typedef struct _HDPluginLoaderPythonPrivate HDPluginLoaderPythonPrivate;
+
+G_DEFINE_TYPE_WITH_PRIVATE (HDPluginLoaderPython, hd_plugin_loader_python, HD_TYPE_PLUGIN_LOADER);
+
+#define HD_PLUGIN_LOADER_PYTHON_GET_PRIVATE(obj) \
+        (G_TYPE_INSTANCE_GET_PRIVATE ((obj), HD_TYPE_PLUGIN_LOADER_PYTHON, HDPluginLoaderPythonPrivate))
+
 
 static void
 hd_plugin_loader_python_destroy_plugin (GtkObject *object, gpointer user_data)
@@ -349,8 +352,6 @@ hd_plugin_loader_python_class_init (HDPluginLoaderPythonClass *class)
   object_class->finalize = hd_plugin_loader_python_finalize;
 
   loader_class->load = hd_plugin_loader_python_load;
-
-  g_type_class_add_private (object_class, sizeof (HDPluginLoaderPythonPrivate));
 }
 
 G_MODULE_EXPORT gchar *
