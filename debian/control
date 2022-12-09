@@ -3,7 +3,7 @@ Section: python
 Priority: optional
 Maintainer: PyMaemo Team <pymaemo-developers@garage.maemo.org>
 XSBC-Original-Maintainer: Ubuntu Mobile Developers <ubuntu-mobile@lists.ubuntu.com>
-Build-Depends: debhelper (>= 5), pkg-config, python-dev, python-gtk2-dev, libhildondesktop1-dev, libtool, automake, autoconf, libdbus-glib-1-dev
+Build-Depends: debhelper (>= 5), pkg-config, python-dev, python-gtk2-dev, libhildondesktop1-dev, libtool, automake, autoconf, libdbus-glib-1-dev, dh-python
 Standards-Version: 3.8.0
 
 Package: python-hildondesktop
